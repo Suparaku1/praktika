@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1788446384071,
+      "tag": "0000_lock_down_security_definer_functions",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788685409959,
+      "tag": "0001_verify_certificate_public_rpc",
+      "breakpoints": true
+    }
+  ]
+}
