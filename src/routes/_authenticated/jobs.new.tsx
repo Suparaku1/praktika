@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { notifyEvent } from "@/lib/workflow/events.functions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -106,6 +107,7 @@ function NewJobPage() {
       return;
     }
     toast.success(status === "published" ? "Shpallja u publikua!" : "Shpallja u ruajt si draft");
+    if (status === "published") notifyEvent({ data: { kind: "job_published", jobId: data.id } }).catch(() => {});
     navigate({ to: "/jobs/$id", params: { id: data.id } });
   };
 

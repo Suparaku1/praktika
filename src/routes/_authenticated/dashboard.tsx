@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AppShell } from "@/components/app-shell";
 import { GridSkeleton, PageHeaderSkeleton } from "@/components/skeletons";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
+import { BusinessActivity } from "@/components/business-activity";
 
 type AppRole = "super_admin" | "teacher" | "student" | "business";
 
@@ -215,12 +215,11 @@ function DashboardPage() {
 
   if (identity.isLoading || !identity.data || !role) {
     return (
-      <AppShell role={null}>
-        <div className="container mx-auto max-w-5xl px-4 py-8 space-y-6">
+      <><div className="container mx-auto max-w-5xl px-4 py-8 space-y-6">
           <PageHeaderSkeleton />
           <GridSkeleton count={6} />
         </div>
-      </AppShell>
+      </>
     );
   }
 
@@ -229,8 +228,7 @@ function DashboardPage() {
   const name = profile?.full_name || profile?.email?.split("@")[0] || t("dash.user");
 
   return (
-    <AppShell role={role}>
-      <div className="container mx-auto max-w-5xl px-4 py-6 sm:py-10 space-y-6 sm:space-y-8">
+    <><div className="container mx-auto max-w-5xl px-4 py-6 sm:py-10 space-y-6 sm:space-y-8">
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-[var(--shadow-card)]">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-start gap-4">
@@ -294,8 +292,10 @@ function DashboardPage() {
           )}
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <section className="space-y-3 lg:col-span-2">
+        {role === "business" && <BusinessActivity userId={identity.data.userId} />}
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <section className="min-w-0 space-y-3 lg:col-span-2">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">{t("dash.quickActions")}</h2>
             <RoleSections role={role} />
           </section>
@@ -329,7 +329,7 @@ function DashboardPage() {
           </section>
         </div>
       </div>
-    </AppShell>
+    </>
   );
 }
 
@@ -352,7 +352,7 @@ function RoleSections({ role }: { role: AppRole }) {
 
   if (role === "student") {
     return (
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <ActionCard icon={Briefcase} title={t("app.jobs")} desc="Shfleto mundësitë nga bizneset partnere." to="/jobs" cta={browse} />
         <ActionCard icon={FileText} title={t("app.applications")} desc="Ndiq statusin e çdo aplikimi." to="/applications" cta={open} />
         <ActionCard icon={FileSignature} title={t("app.contracts")} desc="Shih dhe nënshkruaj kontratat e praktikës." to="/contracts" cta={open} />
@@ -367,7 +367,7 @@ function RoleSections({ role }: { role: AppRole }) {
   }
   if (role === "business") {
     return (
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <ActionCard icon={Plus} title={t("app.myJobs")} desc="Publiko praktikë ose punë në minuta." to="/jobs/new" cta={t("dash.create")} />
         <ActionCard icon={Briefcase} title={t("app.myJobs")} desc="Menaxho dhe shiko statusin e shpalljeve." to="/jobs/manage" cta={open} />
         <ActionCard icon={FileText} title={t("app.applications")} desc="Shqyrto kandidatët e marrë." to="/applications" cta={open} />
@@ -381,7 +381,7 @@ function RoleSections({ role }: { role: AppRole }) {
   }
   if (role === "teacher") {
     return (
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <ActionCard icon={Users} title={t("app.classes")} desc="Krijo klasa, shto nxënës, vlerëso praktikën." to="/classes" cta={open} />
         <ActionCard icon={ClipboardCheck} title={t("app.shortlist")} desc="Përzgjidh kandidatët për çdo shpallje." to="/shortlist" cta={open} />
         <ActionCard icon={ClipboardCheck} title={t("app.feedback")} desc="Vlerëso praktikën me 10 kategoritë." to="/feedback" cta={open} />
@@ -394,7 +394,7 @@ function RoleSections({ role }: { role: AppRole }) {
     );
   }
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
       <ActionCard icon={Shield} title={t("app.admin")} desc="Pasqyrë, statistika dhe veprime të platformës." to="/admin" cta={open} />
       <ActionCard icon={Users} title={t("app.users")} desc="Menaxho rolet e të gjithë përdoruesve." to="/admin/users" cta={open} />
       <ActionCard icon={Building2} title={t("app.businesses")} desc="Verifiko bizneset e regjistruara." to="/admin/businesses" cta={open} />

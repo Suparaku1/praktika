@@ -1,7 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
-  Heart,
   Menu,
   LayoutDashboard,
   Briefcase,
@@ -30,6 +29,7 @@ import { CommandPalette } from "@/components/command-palette";
 import { toast } from "sonner";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
+import { SchoolLogo } from "@/components/school-logo";
 
 type AppRole = "super_admin" | "teacher" | "student" | "business";
 
@@ -136,9 +136,7 @@ export function AppShell({ children, role }: { children: ReactNode; role?: AppRo
 
   const Brand = () => (
     <Link to="/dashboard" className="flex items-center gap-2 px-4 py-4">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <Heart className="h-5 w-5 fill-current" />
-      </div>
+      <SchoolLogo />
       <span className="font-semibold tracking-tight">Zemër & Praktike</span>
     </Link>
   );

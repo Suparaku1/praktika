@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.generate_certificate_number() TO authenticated;

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_calendar/calendar/v3";
 
@@ -20,6 +21,7 @@ function toDateOnly(d: string): string {
 }
 
 export const createCalendarEvent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: Input) => inputSchema.parse(d))
   .handler(async ({ data }) => {
     const lovableKey = process.env.LOVABLE_API_KEY;

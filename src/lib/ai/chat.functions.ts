@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const MessageSchema = z.object({
   role: z.enum(["user", "assistant", "system"]),
@@ -7,6 +8,7 @@ const MessageSchema = z.object({
 });
 
 export const askAi = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator(
     z.object({
       messages: z.array(MessageSchema).min(1).max(30),

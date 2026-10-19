@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Heart, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { SchoolLogo } from "@/components/school-logo";
 
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
@@ -70,9 +71,7 @@ function AuthPage() {
       />
       <div className="w-full max-w-md">
         <Link to="/" className="mb-6 flex items-center justify-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Heart className="h-5 w-5 fill-current" />
-          </div>
+          <SchoolLogo className="h-11 w-11" />
           <span className="text-lg font-semibold tracking-tight">Zemër & Praktike</span>
         </Link>
 

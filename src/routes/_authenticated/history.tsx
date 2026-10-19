@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Award, Download, FileSignature, FileText, Printer, ClipboardCheck, Sheet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -143,8 +142,7 @@ function HistoryPage() {
   );
 
   return (
-    <AppShell role="student">
-      <div className="container mx-auto max-w-5xl px-4 py-6 sm:py-10 space-y-6">
+    <><div className="container mx-auto max-w-5xl px-4 py-6 sm:py-10 space-y-6">
         <header className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Historiku im</h1>
           <p className="text-muted-foreground">{subtitle}</p>
@@ -281,6 +279,6 @@ function HistoryPage() {
           </Tabs>
         )}
       </div>
-    </AppShell>
+    </>
   );
 }

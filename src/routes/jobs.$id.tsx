@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { sendEmail } from "@/lib/email/send.functions";
+import { notifyEvent } from "@/lib/workflow/events.functions";
 
 const jobTypeLabel: Record<string, string> = {
   internship: "Praktikë",
@@ -81,11 +81,11 @@ function JobDetailPage() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("applications").insert({
+    const { data: created, error } = await supabase.from("applications").insert({
       job_id: id,
       student_id: user.id,
       cover_letter: coverLetter || null,
-    });
+    }).select("id").single();
     setSubmitting(false);
     if (error) {
       toast.error("Aplikimi dështoi: " + error.message);
@@ -94,33 +94,7 @@ function JobDetailPage() {
     setAlreadyApplied(true);
     setOpen(false);
     toast.success("Aplikimi u dërgua me sukses!");
-    // Notify business (in-app + email)
-    try {
-      if (job?.business_id) {
-        const { data: biz } = await supabase.from("profiles").select("email, full_name").eq("id", job.business_id).maybeSingle();
-        const { data: me } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
-        await supabase.from("notifications").insert({
-          user_id: job.business_id,
-          type: "new_application",
-          title: "Aplikim i ri",
-          message: `${me?.full_name || "Një student"} aplikoi për "${job.title}"`,
-          link: "/applications",
-        });
-        if (biz?.email) {
-          await sendEmail({
-            data: {
-              to: biz.email,
-              template: {
-                kind: "new_application",
-                jobTitle: job.title,
-                studentName: me?.full_name || "Një student",
-                appUrl: `${window.location.origin}/applications`,
-              },
-            },
-          });
-        }
-      }
-    } catch { /* ignore */ }
+    notifyEvent({ data: { kind: "application_submitted", applicationId: created.id } }).catch(() => {});
   };
 
   if (loading) {

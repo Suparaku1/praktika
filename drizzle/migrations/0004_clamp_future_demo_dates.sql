@@ -1,0 +1,3 @@
+UPDATE public.certificates SET issued_at = LEAST(issued_at, now()), created_at = LEAST(created_at, now()) WHERE issued_at > now() OR created_at > now();
+UPDATE public.practice_feedback SET created_at = LEAST(created_at, now()), submitted_at = LEAST(submitted_at, now()) WHERE created_at > now() OR submitted_at > now();
+UPDATE public.practice_evaluations SET created_at = LEAST(created_at, now()) WHERE created_at > now();

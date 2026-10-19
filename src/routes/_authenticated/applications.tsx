@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { sendEmail } from "@/lib/email/send.functions";
+import { notifyEvent } from "@/lib/workflow/events.functions";
 
 const statusMeta: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; icon: typeof Clock }> = {
   pending: { label: "Në pritje", variant: "secondary", icon: Clock },
@@ -88,35 +88,7 @@ function ApplicationsPage() {
     const { error } = await supabase.from("applications").update({ status: status as any, reviewed_at: new Date().toISOString() }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Statusi u përditësua");
-    const app = received.find((a) => a.id === id);
-    // In-app notification to the student
-    if (app?.student_id && app?.job?.title) {
-      const statusLabel = statusMeta[status]?.label ?? status;
-      await supabase.from("notifications").insert({
-        user_id: app.student_id,
-        type: "application_status",
-        title: `Aplikimi: ${statusLabel}`,
-        message: app.job.title,
-        link: "/applications",
-      });
-    }
-    // Fire-and-forget email to the student
-    try {
-      if (app?.student?.email && app?.job?.title) {
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
-        await sendEmail({
-          data: {
-            to: app.student.email,
-            template: {
-              kind: "application_status",
-              jobTitle: app.job.title,
-              status,
-              appUrl: `${origin}/applications`,
-            },
-          },
-        });
-      }
-    } catch { /* ignore */ }
+    notifyEvent({ data: { kind: "application_status", applicationId: id } }).catch(() => {});
     load();
   };
 

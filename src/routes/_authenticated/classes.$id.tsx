@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2, UserPlus, Trash2, ClipboardList, Star, Plus, FileSignature } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyEvent } from "@/lib/workflow/events.functions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -149,8 +150,9 @@ function ClassDetailPage() {
       improvements: evalForm.improvements || null,
       comment: evalForm.comment || null,
     };
-    const { error } = await supabase.from("practice_evaluations").insert(payload);
+    const { data: ev, error } = await supabase.from("practice_evaluations").insert(payload).select("id").single();
     if (error) return toast.error(error.message);
+    notifyEvent({ data: { kind: "evaluation_added", evaluationId: ev.id } }).catch(() => {});
     toast.success("Vlerësimi u ruajt");
     setEvalOpen(false);
     setEvalForm({ student_id: "", contract_id: "", period_start: "", period_end: "", attendance_percent: "", score: "8", strengths: "", improvements: "", comment: "" });

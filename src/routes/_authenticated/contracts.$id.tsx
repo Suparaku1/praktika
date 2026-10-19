@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2, FileSignature, Send, XCircle, CheckCircle2, Clock, FileText, Building2, GraduationCap, Award, FolderCheck, UserCog, ClipboardCheck, Printer } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { notifyAndEmail } from "@/lib/notify";
+import { notifyEvent } from "@/lib/workflow/events.functions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -88,6 +89,7 @@ function ContractDetailPage() {
     const { error } = await supabase.from("contracts").update({ status: "sent" }).eq("id", id);
     if (error) { setActing(false); return toast.error(error.message); }
     await supabase.from("contract_events").insert({ contract_id: id, actor_id: userId, action: "sent" });
+    notifyEvent({ data: { kind: "contract_status", contractId: id } }).catch(() => {});
     toast.success("Kontrata u dërgua për nënshkrim");
     setActing(false); load();
   };
@@ -98,6 +100,7 @@ function ContractDetailPage() {
     const { error } = await supabase.from("contracts").update({ status: "cancelled" }).eq("id", id);
     if (error) { setActing(false); return toast.error(error.message); }
     await supabase.from("contract_events").insert({ contract_id: id, actor_id: userId, action: "cancelled" });
+    notifyEvent({ data: { kind: "contract_status", contractId: id } }).catch(() => {});
     toast.success("Kontrata u anulua");
     setActing(false); load();
   };
@@ -128,6 +131,7 @@ function ContractDetailPage() {
       contract_id: id, actor_id: userId, action: isStudent ? "signed_student" : "signed_business",
       metadata: { name: signName.trim() } as any,
     });
+    notifyEvent({ data: { kind: "contract_status", contractId: id } }).catch(() => {});
     toast.success("Kontrata u nënshkrua");
     setActing(false); setSignOpen(false); load();
   };
@@ -137,6 +141,7 @@ function ContractDetailPage() {
     const { error } = await supabase.from("contracts").update({ status: "completed" }).eq("id", id);
     if (error) { setActing(false); return toast.error(error.message); }
     await supabase.from("contract_events").insert({ contract_id: id, actor_id: userId, action: "completed" });
+    notifyEvent({ data: { kind: "contract_status", contractId: id } }).catch(() => {});
     toast.success("Kontrata u shënua si e përfunduar");
     setActing(false); load();
   };

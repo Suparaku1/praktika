@@ -1,5 +1,5 @@
-import { Heart } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { SchoolLogo } from "@/components/school-logo";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -8,9 +8,7 @@ export function SiteFooter() {
       <div className="container mx-auto grid gap-10 px-4 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Heart className="h-5 w-5 fill-current" />
-            </div>
+            <SchoolLogo />
             <span className="font-semibold tracking-tight">Zemër & Praktike</span>
           </div>
           <p className="mt-4 max-w-md text-sm text-muted-foreground">
@@ -29,7 +27,7 @@ export function SiteFooter() {
         <div>
           <div className="text-sm font-semibold text-foreground">{t("footer.contact")}</div>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li>Shkolla Profesionale Elbasan</li>
+            <li>Shkolla Teknike Elektrike "Gjergj Canco"</li>
             <li>info@zemerpraktike.al</li>
             <li>+355 69 000 0000</li>
           </ul>

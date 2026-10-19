@@ -12,7 +12,7 @@ export type ServerNotification = {
 
 /**
  * Server-side notification fan-out: inserts in-app notifications with the
- * caller's RLS-scoped client and mirrors each as an email. Failures are
+ * service client (after the caller was authorised) and mirrors each as an email. Failures are
  * logged, never thrown — notifications must not break the workflow.
  */
 export async function notifyAndEmailServer(
@@ -21,12 +21,16 @@ export async function notifyAndEmailServer(
   origin: string,
 ) {
   if (!notes.length) return;
-  const { error } = await supabase.from("notifications").insert(notes);
+  // Callers have already authorised the action; recipients are other users, so
+  // the insert must bypass the caller's RLS (users may only insert their own rows).
+  void supabase;
+  const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+  const { error } = await db.from("notifications").insert(notes);
   if (error) console.error("[notify] insert failed", error.message);
 
   try {
     const ids = Array.from(new Set(notes.map((n) => n.user_id)));
-    const { data: profiles } = await supabase.from("profiles").select("id, email").in("id", ids);
+    const { data: profiles } = await db.from("profiles").select("id, email").in("id", ids);
     const emails = new Map((profiles ?? []).map((p) => [p.id, p.email]));
     await Promise.all(
       notes.map(async (n) => {

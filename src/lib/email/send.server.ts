@@ -1,6 +1,6 @@
 import { renderTemplate, type EmailTemplate } from "./templates";
 
-const SENDER_NAME = "Praktika — Shkolla Profesionale Elbasan";
+const SENDER_NAME = "Praktika — Shkolla Teknike Elektrike \"Gjergj Canco\"";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_mail/gmail/v1";
 
 function toBase64Url(str: string): string {
