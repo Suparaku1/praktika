@@ -27,9 +27,10 @@ export function SiteFooter() {
         <div>
           <div className="text-sm font-semibold text-foreground">{t("footer.contact")}</div>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li>Shkolla Teknike Elektrike "Gjergj Canco"</li>
-            <li>info@zemerpraktike.al</li>
-            <li>+355 69 000 0000</li>
+            <li>Shkolla Teknike Elektrike "Gjergj Canco</li>
+            <li>Adresa: Rruga Bedri Karapici 20, Tiranë</li>
+            <li>teknikeelektrike@hotmail.com</li>
+            <li>+355 4 248 5858</li>
           </ul>
         </div>
       </div>
